@@ -1,13 +1,14 @@
 package pl.elektryczny.surveyapp.survey.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,10 +17,14 @@ import java.util.Set;
 public class Survey {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private boolean active;
+
+    @Transient
+    @JsonIgnore
+    private Integer numQuestions = 0;
 
     @NotNull
     @OneToMany(
@@ -27,9 +32,11 @@ public class Survey {
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,
             orphanRemoval = true)
-    private Set<Question> questions;
+    private List<Question> questions;
 
     private void addQuestion(Question question) {
+        this.numQuestions++;
+        question.setId(this.numQuestions);
         this.questions.add(question);
         question.setSurvey(this);
     }
@@ -37,6 +44,12 @@ public class Survey {
     private void removeQuestion(Question question) {
         this.questions.remove(question);
         question.setSurvey(null);
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = new ArrayList<>();
+
+        questions.forEach(this::addQuestion);
     }
 
 }

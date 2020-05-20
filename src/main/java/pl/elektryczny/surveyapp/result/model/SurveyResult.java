@@ -24,16 +24,16 @@ public class SurveyResult{
             mappedBy = "surveyResult",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    Set<Answer> answers;
+    Set<Reply> replies;
 
-    public void addAnswer(Answer answer) {
-        this.answers.add(answer);
-        answer.setSurveyResult(this);
+    public void addAnswer(Reply reply) {
+        this.replies.add(reply);
+        reply.setSurveyResult(this);
     }
 
-    public void removeAnswer(Answer answer) {
-        this.answers.remove(answer);
-        answer.setSurveyResult(null);
+    public void removeAnswer(Reply reply) {
+        this.replies.remove(reply);
+        reply.setSurveyResult(null);
 
     }
 }

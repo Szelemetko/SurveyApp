@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @Entity
-public class Answer {
+public class Reply {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,7 +21,7 @@ public class Answer {
     private Question question;
 
     @OneToOne
-    private Answer answer;
+    private Reply reply;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SurveyResult surveyResult;
