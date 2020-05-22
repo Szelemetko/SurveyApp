@@ -8,6 +8,6 @@ import java.io.Serializable;
 
 @Data
 public class AnswerKey implements Serializable {
-    private Integer id;
+    private Integer number;
     private Question question;
 }

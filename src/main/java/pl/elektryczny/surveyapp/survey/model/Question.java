@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,20 +20,17 @@ import java.util.List;
 public class Question {
 
     @Id
-    private Integer id;
+    private Integer number;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "survey_id")
     @JsonIgnore
+    @NotNull
     private Survey survey;
 
-    @Transient
-    @JsonIgnore
-    private Integer numOptions = 0;
-
     @NotNull
-    private String question;
+    private String text;
 
     @NotNull
     @Size(min = 2, max = 5)
@@ -43,21 +41,9 @@ public class Question {
     private List<Answer> answers;
 
 
-
-    public void addOption(Answer answer) {
-        this.numOptions++;
-        answer.setId(this.numOptions);
-        this.answers.add(answer);
-        answer.setQuestion(this);
-    }
-
-    public void removeOption(Answer answer) {
-        this.answers.remove(answer);
-        answer.setQuestion(null);
-    }
-
     public void setAnswers(List<Answer> answers) {
-        this.answers = new ArrayList<>();
-        answers.forEach(this::addOption);
+        answers.forEach(answer -> answer.setQuestion(this));
+        this.answers = new ArrayList<>(answers);
+
     }
 }

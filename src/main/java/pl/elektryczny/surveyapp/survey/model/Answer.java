@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,18 +17,19 @@ import javax.validation.constraints.NotNull;
 public class Answer {
 
     @Id
-    private Integer id;
+    private Integer number;
 
     @NotNull
-    private String answer;
+    private String text;
 
     @JsonIgnore
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
-            @JoinColumn(name = "survey_id", insertable = false, updatable = false),
-            @JoinColumn(name = "question_id", insertable = false, updatable = false)
+            @JoinColumn(name = "survey_id"),
+            @JoinColumn(name = "question_number")
     })
+    @NotNull
     private Question question;
 
 }

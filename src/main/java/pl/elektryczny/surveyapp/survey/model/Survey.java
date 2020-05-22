@@ -21,10 +21,7 @@ public class Survey {
     private Integer id;
 
     private boolean active;
-
-    @Transient
-    @JsonIgnore
-    private Integer numQuestions = 0;
+    private String description;
 
     @NotNull
     @OneToMany(
@@ -34,22 +31,10 @@ public class Survey {
             orphanRemoval = true)
     private List<Question> questions;
 
-    private void addQuestion(Question question) {
-        this.numQuestions++;
-        question.setId(this.numQuestions);
-        this.questions.add(question);
-        question.setSurvey(this);
-    }
-
-    private void removeQuestion(Question question) {
-        this.questions.remove(question);
-        question.setSurvey(null);
-    }
-
     public void setQuestions(List<Question> questions) {
-        this.questions = new ArrayList<>();
+        questions.forEach(question -> question.setSurvey(this));
+        this.questions = new ArrayList<>(questions);
 
-        questions.forEach(this::addQuestion);
     }
 
 }
