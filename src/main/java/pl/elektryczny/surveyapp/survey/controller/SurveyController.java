@@ -1,20 +1,16 @@
 package pl.elektryczny.surveyapp.survey.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import pl.elektryczny.surveyapp.survey.model.Survey;
-import pl.elektryczny.surveyapp.survey.repository.SurveyRepository;
 import pl.elektryczny.surveyapp.survey.service.SurveyService;
 
-
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
+
 
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin
 @RequestMapping("/survey")
 public class SurveyController {
 
