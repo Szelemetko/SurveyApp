@@ -7,11 +7,18 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.elektryczny.surveyapp.survey.model.Survey;
 import pl.elektryczny.surveyapp.survey.repository.SurveyRepository;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class SurveyServiceImpl implements SurveyService {
 
     private final SurveyRepository repository;
+
+    @Override
+    public List<Survey> getAllSurveys() {
+        return repository.findAll();
+    }
 
     @Override
     public Survey addSurvey(Survey survey) {

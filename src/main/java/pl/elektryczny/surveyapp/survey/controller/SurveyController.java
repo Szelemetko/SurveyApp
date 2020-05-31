@@ -6,15 +6,21 @@ import pl.elektryczny.surveyapp.survey.model.Survey;
 import pl.elektryczny.surveyapp.survey.service.SurveyService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin
-@RequestMapping("/survey")
+@RequestMapping(path= {"/survey", "/surveys"})
 public class SurveyController {
 
     private final SurveyService surveyService;
+
+    @GetMapping("")
+    public List<Survey> getSurveys() {
+        return surveyService.getAllSurveys();
+    }
 
     @GetMapping("/{surveyId}")
     public Survey getSurveyById(@PathVariable("surveyId") int surveyId) {
