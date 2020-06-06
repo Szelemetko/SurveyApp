@@ -30,8 +30,7 @@ public class SurveyServiceImpl implements SurveyService {
     public Survey updateSurvey(int id, Survey survey) {
         Survey oldSurvey = repository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-//        repository.delete(oldSurvey);
-        survey.setId(id);
+        survey.setId(oldSurvey.getId());
         return repository.save(survey);
     }
 
