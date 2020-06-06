@@ -33,7 +33,7 @@ public class SurveyController {
     }
 
     @PutMapping("/{surveyId}")
-    public Survey updateSurvey(@PathVariable("surveyId") int surveyId, @Valid Survey survey) {
+    public Survey updateSurvey(@PathVariable("surveyId") int surveyId, @RequestBody @Valid Survey survey) {
         return surveyService.updateSurvey(surveyId, survey);
     }
 

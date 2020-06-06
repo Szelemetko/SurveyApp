@@ -1,6 +1,7 @@
 package pl.elektryczny.surveyapp.survey.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @IdClass(QuestionKey.class)
 public class Question {
 
@@ -26,6 +28,7 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id")
     @JsonIgnore
+    @ToString.Exclude
     @NotNull
     private Survey survey;
 
@@ -37,6 +40,7 @@ public class Question {
     @OneToMany(
             mappedBy = "question",
             cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
             orphanRemoval = true)
     private List<Answer> answers;
 
