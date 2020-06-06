@@ -1,7 +1,12 @@
 package pl.elektryczny.surveyapp.result.repository;
 
-import org.springframework.data.repository.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import pl.elektryczny.surveyapp.result.model.SurveyResult;
 
-public interface SurveyResultRepository extends Repository<SurveyResult, Integer> {
+import java.util.List;
+
+public interface SurveyResultRepository extends JpaRepository<SurveyResult, Integer> {
+
+    List<SurveyResult> findSurveyResultsBySurveyId(Integer id);
+
 }

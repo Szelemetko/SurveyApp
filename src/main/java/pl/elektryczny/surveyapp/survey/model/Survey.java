@@ -21,6 +21,7 @@ public class Survey {
     private Integer id;
 
     private boolean active;
+    private String name;
     private String description;
 
     @NotNull
@@ -34,7 +35,6 @@ public class Survey {
     public void setQuestions(List<Question> questions) {
         questions.forEach(question -> question.setSurvey(this));
         this.questions = new ArrayList<>(questions);
-
     }
 
 }

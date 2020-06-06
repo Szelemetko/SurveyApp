@@ -1,39 +1,46 @@
 package pl.elektryczny.surveyapp.result.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.elektryczny.surveyapp.survey.model.Question;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name = "survey_result")
 @Entity
-public class SurveyResult{
+@Table(name = "survey_result")
+@IdClass(SurveyResultKey.class)
+public class SurveyResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @JsonIgnore
+    private Integer surveyResultId;
+
+    @Id
+    @JsonProperty("id")
+    private Integer surveyId;
 
     @NotNull
     @OneToMany(
             mappedBy = "surveyResult",
             cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
             orphanRemoval = true)
-    Set<Reply> replies;
+    List<QuestionAnswer> questions;
 
-    public void addAnswer(Reply reply) {
-        this.replies.add(reply);
-        reply.setSurveyResult(this);
+    public void setQuestions(List<QuestionAnswer> questions) {
+        questions.forEach(question -> question.setSurveyResult(this));
+        this.questions = new ArrayList<>(questions);
     }
 
-    public void removeAnswer(Reply reply) {
-        this.replies.remove(reply);
-        reply.setSurveyResult(null);
-
-    }
 }
