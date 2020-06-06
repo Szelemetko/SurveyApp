@@ -33,52 +33,76 @@ public class SurveyResultServiceImpl implements SurveyResultService {
         List<SurveyResult> results = repository.findSurveyResultsBySurveyId(surveyId);
         Survey survey = surveyService.getSurveyById(surveyId);
 
-
-
         detailedResults.setId(surveyId);
         detailedResults.setName(survey.getName());
         detailedResults.setQuestions(new ArrayList<>());
 
-        Map<Integer, List<QuestionAnswer>> questionMap = results.stream()
-                .flatMap(surveyResult -> surveyResult.getQuestions().stream())
-                .collect(groupingBy(QuestionAnswer::getNumber));
+        survey.getQuestions().forEach(question -> {
+            QuestionDetailsDto questionDetails = new QuestionDetailsDto();
+            questionDetails.setNumber(question.getNumber());
+            questionDetails.setQuestionText(question.getText());
+            long questionResponses = results.stream()
+                    .flatMap(surveyResult -> surveyResult.getQuestions().stream())
+                    .filter(questionAnswer -> questionAnswer.getNumber().equals(question.getNumber()))
+                    .count();
+            questionDetails.setTotalNumberOfRespondents((int) questionResponses);
+            questionDetails.setAnswers(new ArrayList<>());
+            detailedResults.getQuestions().add(questionDetails);
 
+            question.getAnswers().forEach(answer -> {
+                AnswerDetailsDto answerDetails = new AnswerDetailsDto();
+                answerDetails.setNumber(answer.getNumber());
+                answerDetails.setAnswerText(answer.getText());
+                long answerResponses = results.stream()
+                        .flatMap(surveyResult -> surveyResult.getQuestions().stream())
+                        .filter(questionAnswer -> questionAnswer.getNumber().equals(question.getNumber()))
+                        .filter(questionAnswer -> questionAnswer.getChosenAnswer().equals(answer.getNumber()))
+                        .count();
+                answerDetails.setNumberOfRespondents((int) answerResponses);
+                questionDetails.getAnswers().add(answerDetails);
+            });
+        });
 
-
-        questionMap.forEach((questionNumber, questionAnswerList) -> {
-                    QuestionDetailsDto questionDetails = new QuestionDetailsDto();
-                    questionDetails.setNumber(questionNumber);
-                    String questionText = survey.getQuestions().stream()
-                            .filter(question -> question.getNumber().equals(questionNumber))
-                            .findAny()
-                            .get()
-                            .getText();
-                    questionDetails.setQuestionText(questionText);
-                    questionDetails.setTotalNumberOfRespondents(questionAnswerList.size());
-                    detailedResults.getQuestions().add(questionDetails);
-
-                    questionDetails.setAnswers(new ArrayList<>());
-
-                    Map<Integer, Long> answerList = questionAnswerList.stream().collect(
-                            groupingBy(QuestionAnswer::getChosenAnswer, Collectors.counting())
-                    );
-                    answerList.forEach((answerNumber, respondents) -> {
-                        AnswerDetailsDto answerDetails = new AnswerDetailsDto();
-                        answerDetails.setNumber(answerNumber);
-                        answerDetails.setNumberOfRespondents(respondents.intValue());
-                        String answerText = survey.getQuestions().stream()
-                                .filter(question -> question.getNumber().equals(questionNumber))
-                                .flatMap(question -> question.getAnswers().stream())
-                                .filter(answer -> answer.getNumber().equals(answerNumber))
-                                .findFirst()
-                                .get()
-                                .getText();
-                        answerDetails.setAnswerText(answerText);
-                        questionDetails.getAnswers().add(answerDetails);
-                    });
-
-
-                });
+//        Map<Integer, List<QuestionAnswer>> questionMap = results.stream()
+//                .flatMap(surveyResult -> surveyResult.getQuestions().stream())
+//                .collect(groupingBy(QuestionAnswer::getNumber));
+//
+//
+//
+//        questionMap.forEach((questionNumber, questionAnswerList) -> {
+//                    QuestionDetailsDto questionDetails = new QuestionDetailsDto();
+//                    questionDetails.setNumber(questionNumber);
+//                    String questionText = survey.getQuestions().stream()
+//                            .filter(question -> question.getNumber().equals(questionNumber))
+//                            .findAny()
+//                            .get()
+//                            .getText();
+//                    questionDetails.setQuestionText(questionText);
+//                    questionDetails.setTotalNumberOfRespondents(questionAnswerList.size());
+//                    detailedResults.getQuestions().add(questionDetails);
+//
+//                    questionDetails.setAnswers(new ArrayList<>());
+//
+//                    Map<Integer, Long> answerList = questionAnswerList.stream().collect(
+//                            groupingBy(QuestionAnswer::getChosenAnswer, Collectors.counting())
+//                    );
+//                    answerList.forEach((answerNumber, respondents) -> {
+//                        AnswerDetailsDto answerDetails = new AnswerDetailsDto();
+//                        answerDetails.setNumber(answerNumber);
+//                        answerDetails.setNumberOfRespondents(respondents.intValue());
+//                        String answerText = survey.getQuestions().stream()
+//                                .filter(question -> question.getNumber().equals(questionNumber))
+//                                .flatMap(question -> question.getAnswers().stream())
+//                                .filter(answer -> answer.getNumber().equals(answerNumber))
+//                                .findFirst()
+//                                .get()
+//                                .getText();
+//                        answerDetails.setAnswerText(answerText);
+//                        questionDetails.getAnswers().add(answerDetails);
+//                    });
+//
+//
+//                });
 
 
 

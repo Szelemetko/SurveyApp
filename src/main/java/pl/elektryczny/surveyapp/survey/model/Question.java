@@ -36,7 +36,7 @@ public class Question {
     private String text;
 
     @NotNull
-    @Size(min = 2, max = 5)
+    @Size(min = 2, max = 7)
     @OneToMany(
             mappedBy = "question",
             cascade = CascadeType.ALL,

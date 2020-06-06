@@ -3,12 +3,12 @@ package pl.elektryczny.surveyapp.survey.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import pl.elektryczny.surveyapp.survey.model.Survey;
 import pl.elektryczny.surveyapp.survey.repository.SurveyRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -36,8 +36,10 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     public Survey getSurveyById(int id) {
-        return repository.findById(id).orElseThrow(
+        Survey survey = repository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        survey.setQuestions(survey.getQuestions().stream().distinct().collect(Collectors.toList()));
+        return survey;
     }
 
     @Override
