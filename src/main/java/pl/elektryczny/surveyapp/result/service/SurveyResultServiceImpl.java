@@ -1,24 +1,18 @@
 package pl.elektryczny.surveyapp.result.service;
 
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
 import org.springframework.stereotype.Service;
 import pl.elektryczny.surveyapp.result.dto.AnswerDetailsDto;
 import pl.elektryczny.surveyapp.result.dto.QuestionDetailsDto;
 import pl.elektryczny.surveyapp.result.dto.SurveyDetailedResultsDto;
-import pl.elektryczny.surveyapp.result.model.QuestionAnswer;
 import pl.elektryczny.surveyapp.result.model.SurveyResult;
 import pl.elektryczny.surveyapp.result.repository.SurveyResultRepository;
+import pl.elektryczny.surveyapp.security.model.User;
 import pl.elektryczny.surveyapp.survey.model.Survey;
 import pl.elektryczny.surveyapp.survey.service.SurveyService;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.groupingBy;
 
 @RequiredArgsConstructor
 @Service
@@ -28,10 +22,10 @@ public class SurveyResultServiceImpl implements SurveyResultService {
     private final SurveyService surveyService;
 
     @Override
-    public SurveyDetailedResultsDto getSurveyResults(Integer surveyId) {
+    public SurveyDetailedResultsDto getSurveyResults(Integer surveyId, User user) {
         SurveyDetailedResultsDto detailedResults = new SurveyDetailedResultsDto();
         List<SurveyResult> results = repository.findSurveyResultsBySurveyId(surveyId);
-        Survey survey = surveyService.getSurveyById(surveyId);
+        Survey survey = surveyService.getSurveyById(surveyId, user);
 
         detailedResults.setId(surveyId);
         detailedResults.setName(survey.getName());
@@ -103,7 +97,6 @@ public class SurveyResultServiceImpl implements SurveyResultService {
 //
 //
 //                });
-
 
 
         return detailedResults;
