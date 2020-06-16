@@ -14,7 +14,7 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(allowCredentials = "true", origins = "http://localhost:3000", allowedHeaders = "*")
 public class SurveyResultController {
 
     private final SurveyResultService surveyResultService;

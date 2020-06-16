@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(allowCredentials = "true", origins = "http://localhost:3000", allowedHeaders = "*")
 @RequestMapping(path = "/auth")
 @RequiredArgsConstructor
 public class UserController {
@@ -28,15 +28,15 @@ public class UserController {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
-        Cookie cookie = new Cookie("SurveyAppSession", user.getId().toString());
+        Cookie cookie = new Cookie("SurveyAppSession", savedUser.getId().toString());
         cookie.setMaxAge(7 * 24 * 60 * 60);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(savedUser);
     }
 
     @PostMapping("/login")
@@ -47,16 +47,16 @@ public class UserController {
         if (!user.getPassword().equals(savedUser.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password incorrect");
         }
-        Cookie cookie = new Cookie("SurveyAppSession", user.getId().toString());
+        Cookie cookie = new Cookie("SurveyAppSession", savedUser.getId().toString());
         cookie.setMaxAge(7 * 24 * 60 * 60);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(savedUser);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletRequest response) {
         Cookie cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("SurveyAppSession")).findFirst().orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
         );

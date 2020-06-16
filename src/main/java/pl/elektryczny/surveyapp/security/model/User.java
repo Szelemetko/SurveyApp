@@ -1,6 +1,7 @@
 package pl.elektryczny.surveyapp.security.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -30,6 +31,7 @@ public class User {
 
     @NotBlank
     @Size(min = 4, max = 120)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private Boolean isCoordinator = false;
