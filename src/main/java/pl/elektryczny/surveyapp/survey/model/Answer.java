@@ -29,8 +29,8 @@ public class Answer {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
-            @JoinColumn(name = "survey_id"),
-            @JoinColumn(name = "question_number")
+            @JoinColumn(name = "question_number"),
+            @JoinColumn(name = "survey_id")
     })
     @NotNull
     private Question question;
