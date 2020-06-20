@@ -19,6 +19,9 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     public List<Survey> getAllSurveys(User user) {
+        if (user.getIsCoordinator()) {
+            return repository.findAllByUserId(user.getId());
+        }
         return repository.findAll();
     }
 
